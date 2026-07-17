@@ -18,6 +18,7 @@ import { Route as ReportAssetIdRouteImport } from './routes/report.$assetId'
 import { Route as AppTechniciansRouteImport } from './routes/app.technicians'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppQrLabelsRouteImport } from './routes/app.qr-labels'
 import { Route as AppMyJobsRouteImport } from './routes/app.my-jobs'
 import { Route as AppIssuesRouteImport } from './routes/app.issues'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
@@ -69,6 +70,11 @@ const AppReportsRoute = AppReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
+const AppQrLabelsRoute = AppQrLabelsRouteImport.update({
+  id: '/qr-labels',
+  path: '/qr-labels',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMyJobsRoute = AppMyJobsRouteImport.update({
   id: '/my-jobs',
   path: '/my-jobs',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/app/dashboard': typeof AppDashboardRoute
   '/app/issues': typeof AppIssuesRoute
   '/app/my-jobs': typeof AppMyJobsRoute
+  '/app/qr-labels': typeof AppQrLabelsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/technicians': typeof AppTechniciansRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/app/dashboard': typeof AppDashboardRoute
   '/app/issues': typeof AppIssuesRoute
   '/app/my-jobs': typeof AppMyJobsRoute
+  '/app/qr-labels': typeof AppQrLabelsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/technicians': typeof AppTechniciansRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/app/dashboard': typeof AppDashboardRoute
   '/app/issues': typeof AppIssuesRoute
   '/app/my-jobs': typeof AppMyJobsRoute
+  '/app/qr-labels': typeof AppQrLabelsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/technicians': typeof AppTechniciansRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/issues'
     | '/app/my-jobs'
+    | '/app/qr-labels'
     | '/app/reports'
     | '/app/settings'
     | '/app/technicians'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/issues'
     | '/app/my-jobs'
+    | '/app/qr-labels'
     | '/app/reports'
     | '/app/settings'
     | '/app/technicians'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/issues'
     | '/app/my-jobs'
+    | '/app/qr-labels'
     | '/app/reports'
     | '/app/settings'
     | '/app/technicians'
@@ -266,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/qr-labels': {
+      id: '/app/qr-labels'
+      path: '/qr-labels'
+      fullPath: '/app/qr-labels'
+      preLoaderRoute: typeof AppQrLabelsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/my-jobs': {
       id: '/app/my-jobs'
       path: '/my-jobs'
@@ -321,6 +340,7 @@ interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
   AppIssuesRoute: typeof AppIssuesRoute
   AppMyJobsRoute: typeof AppMyJobsRoute
+  AppQrLabelsRoute: typeof AppQrLabelsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppTechniciansRoute: typeof AppTechniciansRoute
@@ -332,6 +352,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
   AppIssuesRoute: AppIssuesRoute,
   AppMyJobsRoute: AppMyJobsRoute,
+  AppQrLabelsRoute: AppQrLabelsRoute,
   AppReportsRoute: AppReportsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppTechniciansRoute: AppTechniciansRoute,
