@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useStore } from "@/data/mockData";
 import { suggestSkillsFromInterests, suggestHelpAreas } from "@/lib/ai";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,15 +63,39 @@ function Onboarding() {
   const [skills, setSkills] = useState<string[]>(profile.skills);
   const [interests, setInterests] = useState<string[]>(profile.interests);
   const [location, setLocation] = useState(profile.location);
+  const [saving, setSaving] = useState(false);
 
   const aiSkills = useMemo(() => suggestSkillsFromInterests(interests, skills), [interests, skills]);
   const aiAreas = useMemo(() => suggestHelpAreas(skills, interests), [skills, interests]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) { toast.error("Enter your name"); return; }
+
+    setSaving(true);
+
+    // Persist to Supabase first — only update local state on success
+    if (auth?.id && !auth.id.startsWith("local-")) {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          name: name.trim(),
+          skills,
+          interests,
+          location: location.trim(),
+        })
+        .eq("id", auth.id);
+
+      if (error) {
+        setSaving(false);
+        toast.error(`Failed to save profile: ${error.message}`);
+        return;
+      }
+    }
+
     updateProfile({ name: name.trim(), skills, interests, location: location.trim() });
     toast.success("Profile ready — welcome!");
+    setSaving(false);
     nav({ to: "/app/dashboard" });
   };
 
@@ -86,7 +111,9 @@ function Onboarding() {
           <TagInput label="Skills (what you can help with)" values={skills} onChange={setSkills} suggestions={SKILL_SUGGESTIONS} />
           <TagInput label="Interests" values={interests} onChange={setInterests} suggestions={SKILL_SUGGESTIONS} />
           <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Campus Library, Building A…" /></div>
-          <Button type="submit" className="w-full sm:w-auto">Continue to dashboard</Button>
+          <Button type="submit" className="w-full sm:w-auto" disabled={saving}>
+            {saving ? "Saving…" : "Continue to dashboard"}
+          </Button>
         </div>
         <Card className="lg:col-span-2 h-fit border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
