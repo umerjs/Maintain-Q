@@ -99,6 +99,7 @@ function ReportPage() {
         reporter_name: name.trim() || "Anonymous",
         reporter_contact: contact.trim() || null,
         photo_url: photoUrl ?? null,
+        code: "",
       }).select("id,code").single();
       if (error) throw error;
 
