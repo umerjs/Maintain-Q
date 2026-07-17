@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/data/mockData";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -12,11 +12,19 @@ function AppLayout() {
   const auth = useStore((s) => s.auth);
   const setRole = useStore((s) => s.setRole);
   const nav = useNavigate();
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    if (!auth) nav({ to: "/login" });
-  }, [auth, nav]);
+    // Wait a tick for zustand persist to rehydrate from localStorage
+    const t = setTimeout(() => setHydrated(true), 0);
+    return () => clearTimeout(t);
+  }, []);
 
+  useEffect(() => {
+    if (hydrated && !auth) nav({ to: "/login" });
+  }, [auth, nav, hydrated]);
+
+  if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>;
   if (!auth) return null;
 
   return (
