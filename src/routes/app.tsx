@@ -15,9 +15,9 @@ function AppLayout() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // Wait a tick for zustand persist to rehydrate from localStorage
-    const t = setTimeout(() => setHydrated(true), 0);
-    return () => clearTimeout(t);
+    if (useStore.persist.hasHydrated()) setHydrated(true);
+    const unsub = useStore.persist.onFinishHydration(() => setHydrated(true));
+    return unsub;
   }, []);
 
   useEffect(() => {
