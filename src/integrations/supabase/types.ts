@@ -7,58 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
-      assets: {
-        Row: {
-          category: string
-          code: string
-          created_at: string
-          description: string | null
-          id: string
-          image_url: string | null
-          installation_date: string | null
-          location: string
-          manufacturer: string | null
-          model_number: string | null
-          name: string
-          status: Database["public"]["Enums"]["asset_status"]
-        }
-        Insert: {
-          category: string
-          code: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          installation_date?: string | null
-          location: string
-          manufacturer?: string | null
-          model_number?: string | null
-          name: string
-          status?: Database["public"]["Enums"]["asset_status"]
-        }
-        Update: {
-          category?: string
-          code?: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          installation_date?: string | null
-          location?: string
-          manufacturer?: string | null
-          model_number?: string | null
-          name?: string
-          status?: Database["public"]["Enums"]["asset_status"]
-        }
-        Relationships: []
-      }
       categories: {
         Row: {
           created_at: string
@@ -77,161 +30,286 @@ export type Database = {
         }
         Relationships: []
       }
-      issue_activity: {
+      help_request_activity: {
         Row: {
           action: string
           at: string
           id: string
-          issue_id: string
+          request_id: string
           who: string
         }
         Insert: {
           action: string
           at?: string
           id?: string
-          issue_id: string
+          request_id: string
           who: string
         }
         Update: {
           action?: string
           at?: string
           id?: string
-          issue_id?: string
+          request_id?: string
           who?: string
         }
         Relationships: [
           {
-            foreignKeyName: "issue_activity_issue_id_fkey"
-            columns: ["issue_id"]
+            foreignKeyName: "help_request_activity_request_id_fkey"
+            columns: ["request_id"]
             isOneToOne: false
-            referencedRelation: "issues"
+            referencedRelation: "help_requests"
             referencedColumns: ["id"]
           },
         ]
       }
-      issues: {
+      help_request_helpers: {
         Row: {
-          asset_id: string
-          assigned_to: string | null
+          helper_id: string
+          id: string
+          offered_at: string
+          request_id: string
+        }
+        Insert: {
+          helper_id: string
+          id?: string
+          offered_at?: string
+          request_id: string
+        }
+        Update: {
+          helper_id?: string
+          id?: string
+          offered_at?: string
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "help_request_helpers_helper_id_fkey"
+            columns: ["helper_id"]
+            isOneToOne: false
+            referencedRelation: "helpers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "help_request_helpers_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "help_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      help_requests: {
+        Row: {
+          category: string
           code: string
           description: string
           due_date: string | null
           id: string
           internal_notes: string | null
+          location: string
           photo_url: string | null
-          priority: Database["public"]["Enums"]["issue_priority"]
           reported_at: string
           reporter_contact: string | null
+          reporter_id: string | null
           reporter_name: string | null
           resolution_notes: string | null
           resolved_at: string | null
+          skills_needed: string[]
           status: Database["public"]["Enums"]["issue_status"]
+          tags: string[]
           title: string
+          urgency: Database["public"]["Enums"]["issue_priority"]
         }
         Insert: {
-          asset_id: string
-          assigned_to?: string | null
+          category?: string
           code: string
           description: string
           due_date?: string | null
           id?: string
           internal_notes?: string | null
+          location?: string
           photo_url?: string | null
-          priority?: Database["public"]["Enums"]["issue_priority"]
           reported_at?: string
           reporter_contact?: string | null
+          reporter_id?: string | null
           reporter_name?: string | null
           resolution_notes?: string | null
           resolved_at?: string | null
+          skills_needed?: string[]
           status?: Database["public"]["Enums"]["issue_status"]
+          tags?: string[]
           title: string
+          urgency?: Database["public"]["Enums"]["issue_priority"]
         }
         Update: {
-          asset_id?: string
-          assigned_to?: string | null
+          category?: string
           code?: string
           description?: string
           due_date?: string | null
           id?: string
           internal_notes?: string | null
+          location?: string
           photo_url?: string | null
-          priority?: Database["public"]["Enums"]["issue_priority"]
           reported_at?: string
           reporter_contact?: string | null
+          reporter_id?: string | null
           reporter_name?: string | null
           resolution_notes?: string | null
           resolved_at?: string | null
+          skills_needed?: string[]
           status?: Database["public"]["Enums"]["issue_status"]
+          tags?: string[]
           title?: string
+          urgency?: Database["public"]["Enums"]["issue_priority"]
+        }
+        Relationships: []
+      }
+      helpers: {
+        Row: {
+          badges: string[]
+          code: string
+          contributions_count: number
+          created_at: string
+          email: string
+          id: string
+          location: string
+          name: string
+          phone: string | null
+          skills: string[]
+          trust_score: number
+        }
+        Insert: {
+          badges?: string[]
+          code: string
+          contributions_count?: number
+          created_at?: string
+          email: string
+          id?: string
+          location?: string
+          name: string
+          phone?: string | null
+          skills?: string[]
+          trust_score?: number
+        }
+        Update: {
+          badges?: string[]
+          code?: string
+          contributions_count?: number
+          created_at?: string
+          email?: string
+          id?: string
+          location?: string
+          name?: string
+          phone?: string | null
+          skills?: string[]
+          trust_score?: number
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          body: string
+          from_user_id: string
+          id: string
+          request_id: string
+          sent_at: string
+          to_user_id: string
+        }
+        Insert: {
+          body: string
+          from_user_id: string
+          id?: string
+          request_id: string
+          sent_at?: string
+          to_user_id: string
+        }
+        Update: {
+          body?: string
+          from_user_id?: string
+          id?: string
+          request_id?: string
+          sent_at?: string
+          to_user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "issues_asset_id_fkey"
-            columns: ["asset_id"]
+            foreignKeyName: "messages_request_id_fkey"
+            columns: ["request_id"]
             isOneToOne: false
-            referencedRelation: "assets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "issues_assigned_to_fkey"
-            columns: ["assigned_to"]
-            isOneToOne: false
-            referencedRelation: "technicians"
+            referencedRelation: "help_requests"
             referencedColumns: ["id"]
           },
         ]
       }
-      profiles: {
+      notifications: {
         Row: {
           created_at: string
-          email: string
           id: string
-          name: string
-          org_name: string
+          read: boolean
+          request_id: string | null
+          text: string
+          type: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          email: string
-          id: string
-          name: string
-          org_name?: string
+          id?: string
+          read?: boolean
+          request_id?: string | null
+          text: string
+          type: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          email?: string
           id?: string
-          name?: string
-          org_name?: string
+          read?: boolean
+          request_id?: string | null
+          text?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
-      technicians: {
+      profiles: {
         Row: {
-          code: string
+          badges: string[]
+          contributions_count: number
           created_at: string
           email: string
           id: string
+          interests: string[]
+          location: string
           name: string
-          phone: string | null
-          specialization: string
+          org_name: string
+          skills: string[]
+          trust_score: number
         }
         Insert: {
-          code: string
+          badges?: string[]
+          contributions_count?: number
           created_at?: string
           email: string
-          id?: string
+          id: string
+          interests?: string[]
+          location?: string
           name: string
-          phone?: string | null
-          specialization: string
+          org_name?: string
+          skills?: string[]
+          trust_score?: number
         }
         Update: {
-          code?: string
+          badges?: string[]
+          contributions_count?: number
           created_at?: string
           email?: string
           id?: string
+          interests?: string[]
+          location?: string
           name?: string
-          phone?: string | null
-          specialization?: string
+          org_name?: string
+          skills?: string[]
+          trust_score?: number
         }
         Relationships: []
       }
@@ -267,10 +345,10 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "Admin" | "Technician" | "Reporter"
+      app_role: "Admin" | "Technician" | "Student" | "Reporter"
       asset_status: "Active" | "Under Maintenance" | "Retired"
       issue_priority: "Low" | "Medium" | "High" | "Critical"
-      issue_status: "Open" | "In Progress" | "Resolved" | "Overdue"
+      issue_status: "Open" | "In Progress" | "Resolved" | "Overdue" | "Solved"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -398,10 +476,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["Admin", "Technician", "Reporter"],
+      app_role: ["Admin", "Technician", "Student", "Reporter"],
       asset_status: ["Active", "Under Maintenance", "Retired"],
       issue_priority: ["Low", "Medium", "High", "Critical"],
-      issue_status: ["Open", "In Progress", "Resolved", "Overdue"],
+      issue_status: ["Open", "In Progress", "Resolved", "Overdue", "Solved"],
     },
   },
 } as const

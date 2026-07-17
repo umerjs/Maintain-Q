@@ -10,24 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
-import { Route as ReportAssetIdRouteImport } from './routes/report.$assetId'
-import { Route as AppTechniciansRouteImport } from './routes/app.technicians'
-import { Route as AppSettingsRouteImport } from './routes/app.settings'
-import { Route as AppReportsRouteImport } from './routes/app.reports'
-import { Route as AppQrLabelsRouteImport } from './routes/app.qr-labels'
-import { Route as AppMyJobsRouteImport } from './routes/app.my-jobs'
-import { Route as AppIssuesRouteImport } from './routes/app.issues'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
+import { Route as AppMyRequestsRouteImport } from './routes/app.my-requests'
+import { Route as AppMessagesRouteImport } from './routes/app.messages'
+import { Route as AppLeaderboardRouteImport } from './routes/app.leaderboard'
+import { Route as AppExploreRouteImport } from './routes/app.explore'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
-import { Route as AppAssetsRouteImport } from './routes/app.assets'
-import { Route as AppAssetsAssetIdRouteImport } from './routes/app.assets.$assetId'
+import { Route as AppCreateRequestRouteImport } from './routes/app.create-request'
+import { Route as AppAiCenterRouteImport } from './routes/app.ai-center'
+import { Route as AppAdminRouteImport } from './routes/app.admin'
+import { Route as AppRequestsRequestIdRouteImport } from './routes/app.requests.$requestId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -50,39 +57,34 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const ReportAssetIdRoute = ReportAssetIdRouteImport.update({
-  id: '/report/$assetId',
-  path: '/report/$assetId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppTechniciansRoute = AppTechniciansRouteImport.update({
-  id: '/technicians',
-  path: '/technicians',
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
-const AppReportsRoute = AppReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
+const AppMyRequestsRoute = AppMyRequestsRouteImport.update({
+  id: '/my-requests',
+  path: '/my-requests',
   getParentRoute: () => AppRoute,
 } as any)
-const AppQrLabelsRoute = AppQrLabelsRouteImport.update({
-  id: '/qr-labels',
-  path: '/qr-labels',
+const AppMessagesRoute = AppMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => AppRoute,
 } as any)
-const AppMyJobsRoute = AppMyJobsRouteImport.update({
-  id: '/my-jobs',
-  path: '/my-jobs',
+const AppLeaderboardRoute = AppLeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
   getParentRoute: () => AppRoute,
 } as any)
-const AppIssuesRoute = AppIssuesRouteImport.update({
-  id: '/issues',
-  path: '/issues',
+const AppExploreRoute = AppExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -90,67 +92,83 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAssetsRoute = AppAssetsRouteImport.update({
-  id: '/assets',
-  path: '/assets',
+const AppCreateRequestRoute = AppCreateRequestRouteImport.update({
+  id: '/create-request',
+  path: '/create-request',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAssetsAssetIdRoute = AppAssetsAssetIdRouteImport.update({
-  id: '/$assetId',
-  path: '/$assetId',
-  getParentRoute: () => AppAssetsRoute,
+const AppAiCenterRoute = AppAiCenterRouteImport.update({
+  id: '/ai-center',
+  path: '/ai-center',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRequestsRequestIdRoute = AppRequestsRequestIdRouteImport.update({
+  id: '/requests/$requestId',
+  path: '/requests/$requestId',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/signup': typeof SignupRoute
-  '/app/assets': typeof AppAssetsRouteWithChildren
+  '/app/admin': typeof AppAdminRoute
+  '/app/ai-center': typeof AppAiCenterRoute
+  '/app/create-request': typeof AppCreateRequestRoute
   '/app/dashboard': typeof AppDashboardRoute
-  '/app/issues': typeof AppIssuesRoute
-  '/app/my-jobs': typeof AppMyJobsRoute
-  '/app/qr-labels': typeof AppQrLabelsRoute
-  '/app/reports': typeof AppReportsRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/technicians': typeof AppTechniciansRoute
-  '/report/$assetId': typeof ReportAssetIdRoute
+  '/app/explore': typeof AppExploreRoute
+  '/app/leaderboard': typeof AppLeaderboardRoute
+  '/app/messages': typeof AppMessagesRoute
+  '/app/my-requests': typeof AppMyRequestsRoute
+  '/app/notifications': typeof AppNotificationsRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/': typeof AppIndexRoute
-  '/app/assets/$assetId': typeof AppAssetsAssetIdRoute
+  '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/signup': typeof SignupRoute
-  '/app/assets': typeof AppAssetsRouteWithChildren
+  '/app/admin': typeof AppAdminRoute
+  '/app/ai-center': typeof AppAiCenterRoute
+  '/app/create-request': typeof AppCreateRequestRoute
   '/app/dashboard': typeof AppDashboardRoute
-  '/app/issues': typeof AppIssuesRoute
-  '/app/my-jobs': typeof AppMyJobsRoute
-  '/app/qr-labels': typeof AppQrLabelsRoute
-  '/app/reports': typeof AppReportsRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/technicians': typeof AppTechniciansRoute
-  '/report/$assetId': typeof ReportAssetIdRoute
+  '/app/explore': typeof AppExploreRoute
+  '/app/leaderboard': typeof AppLeaderboardRoute
+  '/app/messages': typeof AppMessagesRoute
+  '/app/my-requests': typeof AppMyRequestsRoute
+  '/app/notifications': typeof AppNotificationsRoute
+  '/app/profile': typeof AppProfileRoute
   '/app': typeof AppIndexRoute
-  '/app/assets/$assetId': typeof AppAssetsAssetIdRoute
+  '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/signup': typeof SignupRoute
-  '/app/assets': typeof AppAssetsRouteWithChildren
+  '/app/admin': typeof AppAdminRoute
+  '/app/ai-center': typeof AppAiCenterRoute
+  '/app/create-request': typeof AppCreateRequestRoute
   '/app/dashboard': typeof AppDashboardRoute
-  '/app/issues': typeof AppIssuesRoute
-  '/app/my-jobs': typeof AppMyJobsRoute
-  '/app/qr-labels': typeof AppQrLabelsRoute
-  '/app/reports': typeof AppReportsRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/technicians': typeof AppTechniciansRoute
-  '/report/$assetId': typeof ReportAssetIdRoute
+  '/app/explore': typeof AppExploreRoute
+  '/app/leaderboard': typeof AppLeaderboardRoute
+  '/app/messages': typeof AppMessagesRoute
+  '/app/my-requests': typeof AppMyRequestsRoute
+  '/app/notifications': typeof AppNotificationsRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/': typeof AppIndexRoute
-  '/app/assets/$assetId': typeof AppAssetsAssetIdRoute
+  '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,59 +176,65 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/onboarding'
     | '/signup'
-    | '/app/assets'
+    | '/app/admin'
+    | '/app/ai-center'
+    | '/app/create-request'
     | '/app/dashboard'
-    | '/app/issues'
-    | '/app/my-jobs'
-    | '/app/qr-labels'
-    | '/app/reports'
-    | '/app/settings'
-    | '/app/technicians'
-    | '/report/$assetId'
+    | '/app/explore'
+    | '/app/leaderboard'
+    | '/app/messages'
+    | '/app/my-requests'
+    | '/app/notifications'
+    | '/app/profile'
     | '/app/'
-    | '/app/assets/$assetId'
+    | '/app/requests/$requestId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
+    | '/onboarding'
     | '/signup'
-    | '/app/assets'
+    | '/app/admin'
+    | '/app/ai-center'
+    | '/app/create-request'
     | '/app/dashboard'
-    | '/app/issues'
-    | '/app/my-jobs'
-    | '/app/qr-labels'
-    | '/app/reports'
-    | '/app/settings'
-    | '/app/technicians'
-    | '/report/$assetId'
+    | '/app/explore'
+    | '/app/leaderboard'
+    | '/app/messages'
+    | '/app/my-requests'
+    | '/app/notifications'
+    | '/app/profile'
     | '/app'
-    | '/app/assets/$assetId'
+    | '/app/requests/$requestId'
   id:
     | '__root__'
     | '/'
     | '/app'
     | '/login'
+    | '/onboarding'
     | '/signup'
-    | '/app/assets'
+    | '/app/admin'
+    | '/app/ai-center'
+    | '/app/create-request'
     | '/app/dashboard'
-    | '/app/issues'
-    | '/app/my-jobs'
-    | '/app/qr-labels'
-    | '/app/reports'
-    | '/app/settings'
-    | '/app/technicians'
-    | '/report/$assetId'
+    | '/app/explore'
+    | '/app/leaderboard'
+    | '/app/messages'
+    | '/app/my-requests'
+    | '/app/notifications'
+    | '/app/profile'
     | '/app/'
-    | '/app/assets/$assetId'
+    | '/app/requests/$requestId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   SignupRoute: typeof SignupRoute
-  ReportAssetIdRoute: typeof ReportAssetIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -220,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -250,53 +281,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/report/$assetId': {
-      id: '/report/$assetId'
-      path: '/report/$assetId'
-      fullPath: '/report/$assetId'
-      preLoaderRoute: typeof ReportAssetIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/technicians': {
-      id: '/app/technicians'
-      path: '/technicians'
-      fullPath: '/app/technicians'
-      preLoaderRoute: typeof AppTechniciansRouteImport
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/settings': {
-      id: '/app/settings'
-      path: '/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
+    '/app/notifications': {
+      id: '/app/notifications'
+      path: '/notifications'
+      fullPath: '/app/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/reports': {
-      id: '/app/reports'
-      path: '/reports'
-      fullPath: '/app/reports'
-      preLoaderRoute: typeof AppReportsRouteImport
+    '/app/my-requests': {
+      id: '/app/my-requests'
+      path: '/my-requests'
+      fullPath: '/app/my-requests'
+      preLoaderRoute: typeof AppMyRequestsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/qr-labels': {
-      id: '/app/qr-labels'
-      path: '/qr-labels'
-      fullPath: '/app/qr-labels'
-      preLoaderRoute: typeof AppQrLabelsRouteImport
+    '/app/messages': {
+      id: '/app/messages'
+      path: '/messages'
+      fullPath: '/app/messages'
+      preLoaderRoute: typeof AppMessagesRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/my-jobs': {
-      id: '/app/my-jobs'
-      path: '/my-jobs'
-      fullPath: '/app/my-jobs'
-      preLoaderRoute: typeof AppMyJobsRouteImport
+    '/app/leaderboard': {
+      id: '/app/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/app/leaderboard'
+      preLoaderRoute: typeof AppLeaderboardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/issues': {
-      id: '/app/issues'
-      path: '/issues'
-      fullPath: '/app/issues'
-      preLoaderRoute: typeof AppIssuesRouteImport
+    '/app/explore': {
+      id: '/app/explore'
+      path: '/explore'
+      fullPath: '/app/explore'
+      preLoaderRoute: typeof AppExploreRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/dashboard': {
@@ -306,57 +330,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/assets': {
-      id: '/app/assets'
-      path: '/assets'
-      fullPath: '/app/assets'
-      preLoaderRoute: typeof AppAssetsRouteImport
+    '/app/create-request': {
+      id: '/app/create-request'
+      path: '/create-request'
+      fullPath: '/app/create-request'
+      preLoaderRoute: typeof AppCreateRequestRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/assets/$assetId': {
-      id: '/app/assets/$assetId'
-      path: '/$assetId'
-      fullPath: '/app/assets/$assetId'
-      preLoaderRoute: typeof AppAssetsAssetIdRouteImport
-      parentRoute: typeof AppAssetsRoute
+    '/app/ai-center': {
+      id: '/app/ai-center'
+      path: '/ai-center'
+      fullPath: '/app/ai-center'
+      preLoaderRoute: typeof AppAiCenterRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/requests/$requestId': {
+      id: '/app/requests/$requestId'
+      path: '/requests/$requestId'
+      fullPath: '/app/requests/$requestId'
+      preLoaderRoute: typeof AppRequestsRequestIdRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface AppAssetsRouteChildren {
-  AppAssetsAssetIdRoute: typeof AppAssetsAssetIdRoute
-}
-
-const AppAssetsRouteChildren: AppAssetsRouteChildren = {
-  AppAssetsAssetIdRoute: AppAssetsAssetIdRoute,
-}
-
-const AppAssetsRouteWithChildren = AppAssetsRoute._addFileChildren(
-  AppAssetsRouteChildren,
-)
-
 interface AppRouteChildren {
-  AppAssetsRoute: typeof AppAssetsRouteWithChildren
+  AppAdminRoute: typeof AppAdminRoute
+  AppAiCenterRoute: typeof AppAiCenterRoute
+  AppCreateRequestRoute: typeof AppCreateRequestRoute
   AppDashboardRoute: typeof AppDashboardRoute
-  AppIssuesRoute: typeof AppIssuesRoute
-  AppMyJobsRoute: typeof AppMyJobsRoute
-  AppQrLabelsRoute: typeof AppQrLabelsRoute
-  AppReportsRoute: typeof AppReportsRoute
-  AppSettingsRoute: typeof AppSettingsRoute
-  AppTechniciansRoute: typeof AppTechniciansRoute
+  AppExploreRoute: typeof AppExploreRoute
+  AppLeaderboardRoute: typeof AppLeaderboardRoute
+  AppMessagesRoute: typeof AppMessagesRoute
+  AppMyRequestsRoute: typeof AppMyRequestsRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
+  AppProfileRoute: typeof AppProfileRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppRequestsRequestIdRoute: typeof AppRequestsRequestIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAssetsRoute: AppAssetsRouteWithChildren,
+  AppAdminRoute: AppAdminRoute,
+  AppAiCenterRoute: AppAiCenterRoute,
+  AppCreateRequestRoute: AppCreateRequestRoute,
   AppDashboardRoute: AppDashboardRoute,
-  AppIssuesRoute: AppIssuesRoute,
-  AppMyJobsRoute: AppMyJobsRoute,
-  AppQrLabelsRoute: AppQrLabelsRoute,
-  AppReportsRoute: AppReportsRoute,
-  AppSettingsRoute: AppSettingsRoute,
-  AppTechniciansRoute: AppTechniciansRoute,
+  AppExploreRoute: AppExploreRoute,
+  AppLeaderboardRoute: AppLeaderboardRoute,
+  AppMessagesRoute: AppMessagesRoute,
+  AppMyRequestsRoute: AppMyRequestsRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
+  AppProfileRoute: AppProfileRoute,
   AppIndexRoute: AppIndexRoute,
+  AppRequestsRequestIdRoute: AppRequestsRequestIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -365,9 +397,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   SignupRoute: SignupRoute,
-  ReportAssetIdRoute: ReportAssetIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -1,6 +1,7 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Package, AlertTriangle, Wrench, FileBarChart, Settings, LogOut, ClipboardList, ScanLine, QrCode
+  LayoutDashboard, Compass, PlusCircle, ClipboardList, MessageCircle,
+  Trophy, Bot, Bell, UserCircle, Shield, LogOut, HeartHandshake,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -10,41 +11,45 @@ import {
 import { useStore } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 
-const adminNav = [
+const baseNav = [
   { title: "Dashboard", url: "/app/dashboard", icon: LayoutDashboard },
-  { title: "Assets", url: "/app/assets", icon: Package },
-  { title: "Issues", url: "/app/issues", icon: AlertTriangle },
-  { title: "Technicians", url: "/app/technicians", icon: Wrench },
-  { title: "QR Labels", url: "/app/qr-labels", icon: QrCode },
-  { title: "Reports", url: "/app/reports", icon: FileBarChart },
-  { title: "Settings", url: "/app/settings", icon: Settings },
+  { title: "Explore", url: "/app/explore", icon: Compass },
+  { title: "Create Request", url: "/app/create-request", icon: PlusCircle },
+  { title: "My Contributions", url: "/app/my-requests", icon: ClipboardList },
+  { title: "Messages", url: "/app/messages", icon: MessageCircle },
+  { title: "Leaderboard", url: "/app/leaderboard", icon: Trophy },
+  { title: "AI Center", url: "/app/ai-center", icon: Bot },
+  { title: "Notifications", url: "/app/notifications", icon: Bell },
+  { title: "Profile", url: "/app/profile", icon: UserCircle },
 ];
 
-const techNav = [
-  { title: "My Jobs", url: "/app/my-jobs", icon: ClipboardList },
-  { title: "Assets", url: "/app/assets", icon: Package },
-];
+const adminExtra = { title: "Admin Panel", url: "/app/admin", icon: Shield };
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const auth = useStore((s) => s.auth);
+  const notifications = useStore((s) => s.notifications);
   const logout = useStore((s) => s.logout);
   const navigate = useNavigate();
 
-  const items = auth?.role === "Technician" ? techNav : adminNav;
+  const unread = notifications.filter(
+    (n) => !n.read && (n.userId === auth?.id || n.userId === auth?.email),
+  ).length;
+
+  const items = auth?.role === "Admin" ? [...baseNav, adminExtra] : baseNav;
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <Link to="/app/dashboard" className="flex items-center gap-2 px-2 py-2">
           <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <ScanLine className="h-4 w-4" />
+            <HeartHandshake className="h-4 w-4" />
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <div className="truncate text-sm font-bold">MaintainIQ</div>
+              <div className="truncate text-sm font-bold">Helplytics AI</div>
               <div className="truncate text-[11px] text-muted-foreground">{auth?.orgName}</div>
             </div>
           )}
@@ -52,7 +57,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{auth?.role === "Technician" ? "Technician" : "Workspace"}</SidebarGroupLabel>
+          <SidebarGroupLabel>{auth?.role ?? "Workspace"}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
@@ -62,7 +67,14 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild isActive={active}>
                       <Link to={item.url} className="flex items-center gap-2">
                         <item.icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && <span>{item.title}</span>}
+                        {!collapsed && (
+                          <span className="flex flex-1 items-center justify-between gap-2">
+                            {item.title}
+                            {item.title === "Notifications" && unread > 0 && (
+                              <span className="rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">{unread}</span>
+                            )}
+                          </span>
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
