@@ -19,6 +19,13 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) nav({ to: "/app/dashboard" });
+    });
+  }, [nav]);
+
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) { toast.error("Enter email and password"); return; }
