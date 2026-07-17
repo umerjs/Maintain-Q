@@ -21,8 +21,8 @@ function AppLayout() {
   }, []);
 
   useEffect(() => {
-    if (hydrated && !auth) nav({ to: "/login" });
-  }, [auth, nav, hydrated]);
+    if (hydrated && !useStore.getState().auth) nav({ to: "/login" });
+  }, [hydrated, nav, auth]);
 
   if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>;
   if (!auth) return null;
