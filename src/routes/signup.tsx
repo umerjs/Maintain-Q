@@ -21,6 +21,13 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) nav({ to: "/app/dashboard" });
+    });
+  }, [nav]);
+
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !org || !password) { toast.error("Fill in all fields"); return; }
