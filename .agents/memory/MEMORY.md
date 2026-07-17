@@ -1,0 +1,2 @@
+- [Supabase SSR WebSocket fix](supabase-ssr-proxy.md) — createClient() must be lazy (Proxy) in TanStack Start; Node 20 has no native WebSocket
+- [TanStack Start CSS injection](tanstack-start-css.md) — CSS loaded via JS manifest, not static link; SSR screenshots look unstyled but real browser works

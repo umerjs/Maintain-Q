@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@/lib/auth-store'
 
-export const Route = createFileRoute('/')({\n  component: Home,
+export const Route = createFileRoute('/')({
+  component: Home,
 })
 
 function Home() {

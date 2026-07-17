@@ -12,9 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as ReportIssueAssetIdRouteImport } from './routes/report-issue/$assetId'
+import { Route as DashboardLayoutRouteImport } from './routes/dashboard/_layout'
+import { Route as AssetQrCodeIdRouteImport } from './routes/asset/$qrCodeId'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppMyRequestsRouteImport } from './routes/app.my-requests'
@@ -25,6 +29,13 @@ import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppCreateRequestRouteImport } from './routes/app.create-request'
 import { Route as AppAiCenterRouteImport } from './routes/app.ai-center'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
+import { Route as DashboardTechnicianIndexRouteImport } from './routes/dashboard/technician/index'
+import { Route as DashboardStudentIndexRouteImport } from './routes/dashboard/student/index'
+import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard/admin/index'
+import { Route as DashboardTechnicianAssignedTicketsRouteImport } from './routes/dashboard/technician/assigned-tickets'
+import { Route as DashboardStudentMyReportsRouteImport } from './routes/dashboard/student/my-reports'
+import { Route as DashboardAdminTicketsRouteImport } from './routes/dashboard/admin/tickets'
+import { Route as DashboardAdminAssetsRouteImport } from './routes/dashboard/admin/assets'
 import { Route as AppRequestsRequestIdRouteImport } from './routes/app.requests.$requestId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -42,6 +53,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -56,6 +72,21 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const ReportIssueAssetIdRoute = ReportIssueAssetIdRouteImport.update({
+  id: '/report-issue/$assetId',
+  path: '/report-issue/$assetId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardLayoutRoute = DashboardLayoutRouteImport.update({
+  id: '/dashboard/_layout',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssetQrCodeIdRoute = AssetQrCodeIdRouteImport.update({
+  id: '/asset/$qrCodeId',
+  path: '/asset/$qrCodeId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
@@ -107,6 +138,44 @@ const AppAdminRoute = AppAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AppRoute,
 } as any)
+const DashboardTechnicianIndexRoute =
+  DashboardTechnicianIndexRouteImport.update({
+    id: '/dashboard/technician/',
+    path: '/dashboard/technician/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardStudentIndexRoute = DashboardStudentIndexRouteImport.update({
+  id: '/dashboard/student/',
+  path: '/dashboard/student/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardAdminIndexRoute = DashboardAdminIndexRouteImport.update({
+  id: '/dashboard/admin/',
+  path: '/dashboard/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardTechnicianAssignedTicketsRoute =
+  DashboardTechnicianAssignedTicketsRouteImport.update({
+    id: '/dashboard/technician/assigned-tickets',
+    path: '/dashboard/technician/assigned-tickets',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardStudentMyReportsRoute =
+  DashboardStudentMyReportsRouteImport.update({
+    id: '/dashboard/student/my-reports',
+    path: '/dashboard/student/my-reports',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardAdminTicketsRoute = DashboardAdminTicketsRouteImport.update({
+  id: '/dashboard/admin/tickets',
+  path: '/dashboard/admin/tickets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardAdminAssetsRoute = DashboardAdminAssetsRouteImport.update({
+  id: '/dashboard/admin/assets',
+  path: '/dashboard/admin/assets',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRequestsRequestIdRoute = AppRequestsRequestIdRouteImport.update({
   id: '/requests/$requestId',
   path: '/requests/$requestId',
@@ -116,6 +185,7 @@ const AppRequestsRequestIdRoute = AppRequestsRequestIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/signup': typeof SignupRoute
@@ -129,11 +199,22 @@ export interface FileRoutesByFullPath {
   '/app/my-requests': typeof AppMyRequestsRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
+  '/asset/$qrCodeId': typeof AssetQrCodeIdRoute
+  '/dashboard': typeof DashboardLayoutRoute
+  '/report-issue/$assetId': typeof ReportIssueAssetIdRoute
   '/app/': typeof AppIndexRoute
   '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
+  '/dashboard/admin/assets': typeof DashboardAdminAssetsRoute
+  '/dashboard/admin/tickets': typeof DashboardAdminTicketsRoute
+  '/dashboard/student/my-reports': typeof DashboardStudentMyReportsRoute
+  '/dashboard/technician/assigned-tickets': typeof DashboardTechnicianAssignedTicketsRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
+  '/dashboard/student/': typeof DashboardStudentIndexRoute
+  '/dashboard/technician/': typeof DashboardTechnicianIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/signup': typeof SignupRoute
@@ -147,13 +228,24 @@ export interface FileRoutesByTo {
   '/app/my-requests': typeof AppMyRequestsRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
+  '/asset/$qrCodeId': typeof AssetQrCodeIdRoute
+  '/dashboard': typeof DashboardLayoutRoute
+  '/report-issue/$assetId': typeof ReportIssueAssetIdRoute
   '/app': typeof AppIndexRoute
   '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
+  '/dashboard/admin/assets': typeof DashboardAdminAssetsRoute
+  '/dashboard/admin/tickets': typeof DashboardAdminTicketsRoute
+  '/dashboard/student/my-reports': typeof DashboardStudentMyReportsRoute
+  '/dashboard/technician/assigned-tickets': typeof DashboardTechnicianAssignedTicketsRoute
+  '/dashboard/admin': typeof DashboardAdminIndexRoute
+  '/dashboard/student': typeof DashboardStudentIndexRoute
+  '/dashboard/technician': typeof DashboardTechnicianIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/signup': typeof SignupRoute
@@ -167,14 +259,25 @@ export interface FileRoutesById {
   '/app/my-requests': typeof AppMyRequestsRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
+  '/asset/$qrCodeId': typeof AssetQrCodeIdRoute
+  '/dashboard/_layout': typeof DashboardLayoutRoute
+  '/report-issue/$assetId': typeof ReportIssueAssetIdRoute
   '/app/': typeof AppIndexRoute
   '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
+  '/dashboard/admin/assets': typeof DashboardAdminAssetsRoute
+  '/dashboard/admin/tickets': typeof DashboardAdminTicketsRoute
+  '/dashboard/student/my-reports': typeof DashboardStudentMyReportsRoute
+  '/dashboard/technician/assigned-tickets': typeof DashboardTechnicianAssignedTicketsRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
+  '/dashboard/student/': typeof DashboardStudentIndexRoute
+  '/dashboard/technician/': typeof DashboardTechnicianIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/app'
+    | '/forgot-password'
     | '/login'
     | '/onboarding'
     | '/signup'
@@ -188,11 +291,22 @@ export interface FileRouteTypes {
     | '/app/my-requests'
     | '/app/notifications'
     | '/app/profile'
+    | '/asset/$qrCodeId'
+    | '/dashboard'
+    | '/report-issue/$assetId'
     | '/app/'
     | '/app/requests/$requestId'
+    | '/dashboard/admin/assets'
+    | '/dashboard/admin/tickets'
+    | '/dashboard/student/my-reports'
+    | '/dashboard/technician/assigned-tickets'
+    | '/dashboard/admin/'
+    | '/dashboard/student/'
+    | '/dashboard/technician/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/login'
     | '/onboarding'
     | '/signup'
@@ -206,12 +320,23 @@ export interface FileRouteTypes {
     | '/app/my-requests'
     | '/app/notifications'
     | '/app/profile'
+    | '/asset/$qrCodeId'
+    | '/dashboard'
+    | '/report-issue/$assetId'
     | '/app'
     | '/app/requests/$requestId'
+    | '/dashboard/admin/assets'
+    | '/dashboard/admin/tickets'
+    | '/dashboard/student/my-reports'
+    | '/dashboard/technician/assigned-tickets'
+    | '/dashboard/admin'
+    | '/dashboard/student'
+    | '/dashboard/technician'
   id:
     | '__root__'
     | '/'
     | '/app'
+    | '/forgot-password'
     | '/login'
     | '/onboarding'
     | '/signup'
@@ -225,16 +350,37 @@ export interface FileRouteTypes {
     | '/app/my-requests'
     | '/app/notifications'
     | '/app/profile'
+    | '/asset/$qrCodeId'
+    | '/dashboard/_layout'
+    | '/report-issue/$assetId'
     | '/app/'
     | '/app/requests/$requestId'
+    | '/dashboard/admin/assets'
+    | '/dashboard/admin/tickets'
+    | '/dashboard/student/my-reports'
+    | '/dashboard/technician/assigned-tickets'
+    | '/dashboard/admin/'
+    | '/dashboard/student/'
+    | '/dashboard/technician/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   SignupRoute: typeof SignupRoute
+  AssetQrCodeIdRoute: typeof AssetQrCodeIdRoute
+  DashboardLayoutRoute: typeof DashboardLayoutRoute
+  ReportIssueAssetIdRoute: typeof ReportIssueAssetIdRoute
+  DashboardAdminAssetsRoute: typeof DashboardAdminAssetsRoute
+  DashboardAdminTicketsRoute: typeof DashboardAdminTicketsRoute
+  DashboardStudentMyReportsRoute: typeof DashboardStudentMyReportsRoute
+  DashboardTechnicianAssignedTicketsRoute: typeof DashboardTechnicianAssignedTicketsRoute
+  DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
+  DashboardStudentIndexRoute: typeof DashboardStudentIndexRoute
+  DashboardTechnicianIndexRoute: typeof DashboardTechnicianIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,6 +406,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app': {
       id: '/app'
       path: '/app'
@@ -280,6 +433,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/report-issue/$assetId': {
+      id: '/report-issue/$assetId'
+      path: '/report-issue/$assetId'
+      fullPath: '/report-issue/$assetId'
+      preLoaderRoute: typeof ReportIssueAssetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/_layout': {
+      id: '/dashboard/_layout'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asset/$qrCodeId': {
+      id: '/asset/$qrCodeId'
+      path: '/asset/$qrCodeId'
+      fullPath: '/asset/$qrCodeId'
+      preLoaderRoute: typeof AssetQrCodeIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/profile': {
       id: '/app/profile'
@@ -351,6 +525,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof AppRoute
     }
+    '/dashboard/technician/': {
+      id: '/dashboard/technician/'
+      path: '/dashboard/technician'
+      fullPath: '/dashboard/technician/'
+      preLoaderRoute: typeof DashboardTechnicianIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/student/': {
+      id: '/dashboard/student/'
+      path: '/dashboard/student'
+      fullPath: '/dashboard/student/'
+      preLoaderRoute: typeof DashboardStudentIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/admin/': {
+      id: '/dashboard/admin/'
+      path: '/dashboard/admin'
+      fullPath: '/dashboard/admin/'
+      preLoaderRoute: typeof DashboardAdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/technician/assigned-tickets': {
+      id: '/dashboard/technician/assigned-tickets'
+      path: '/dashboard/technician/assigned-tickets'
+      fullPath: '/dashboard/technician/assigned-tickets'
+      preLoaderRoute: typeof DashboardTechnicianAssignedTicketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/student/my-reports': {
+      id: '/dashboard/student/my-reports'
+      path: '/dashboard/student/my-reports'
+      fullPath: '/dashboard/student/my-reports'
+      preLoaderRoute: typeof DashboardStudentMyReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/admin/tickets': {
+      id: '/dashboard/admin/tickets'
+      path: '/dashboard/admin/tickets'
+      fullPath: '/dashboard/admin/tickets'
+      preLoaderRoute: typeof DashboardAdminTicketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/admin/assets': {
+      id: '/dashboard/admin/assets'
+      path: '/dashboard/admin/assets'
+      fullPath: '/dashboard/admin/assets'
+      preLoaderRoute: typeof DashboardAdminAssetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/requests/$requestId': {
       id: '/app/requests/$requestId'
       path: '/requests/$requestId'
@@ -396,9 +619,21 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   SignupRoute: SignupRoute,
+  AssetQrCodeIdRoute: AssetQrCodeIdRoute,
+  DashboardLayoutRoute: DashboardLayoutRoute,
+  ReportIssueAssetIdRoute: ReportIssueAssetIdRoute,
+  DashboardAdminAssetsRoute: DashboardAdminAssetsRoute,
+  DashboardAdminTicketsRoute: DashboardAdminTicketsRoute,
+  DashboardStudentMyReportsRoute: DashboardStudentMyReportsRoute,
+  DashboardTechnicianAssignedTicketsRoute:
+    DashboardTechnicianAssignedTicketsRoute,
+  DashboardAdminIndexRoute: DashboardAdminIndexRoute,
+  DashboardStudentIndexRoute: DashboardStudentIndexRoute,
+  DashboardTechnicianIndexRoute: DashboardTechnicianIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

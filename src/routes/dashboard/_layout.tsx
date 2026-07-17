@@ -5,7 +5,7 @@ import { logout } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
-export const Route = createFileRoute('/dashboard')({
+export const Route = createFileRoute('/dashboard/_layout')({
   component: DashboardLayout,
 })
 

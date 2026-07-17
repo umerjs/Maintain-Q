@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { RootRoute, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { useAuthStore } from '@/lib/auth-store'
 import { supabase } from '@/lib/supabase'
+import '../styles.css'
 
-export const Route = new RootRoute({
+export const Route = createRootRoute({
   component: RootComponent,
 })
 
