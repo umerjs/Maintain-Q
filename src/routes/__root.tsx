@@ -14,21 +14,26 @@ function RootComponent() {
   const setProfile = useAuthStore((state) => state.setProfile)
 
   useEffect(() => {
+    // Initialize auth on mount
     initialize()
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null)
 
       if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single()
 
-        setProfile(profile)
+          setProfile(profile)
+        } catch (error) {
+          console.error('Failed to fetch profile:', error)
+          setProfile(null)
+        }
       } else {
         setProfile(null)
       }
