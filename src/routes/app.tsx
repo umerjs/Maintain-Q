@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useStore } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Badge } from "@/components/ui/badge";
@@ -10,22 +11,53 @@ export const Route = createFileRoute("/app")({ component: AppLayout });
 
 function AppLayout() {
   const auth = useStore((s) => s.auth);
+  const login = useStore((s) => s.login);
+  const logout = useStore((s) => s.logout);
+  const setOrgName = useStore((s) => s.setOrgName);
   const setRole = useStore((s) => s.setRole);
   const nav = useNavigate();
-  const [hydrated, setHydrated] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    if (useStore.persist.hasHydrated()) setHydrated(true);
-    const unsub = useStore.persist.onFinishHydration(() => setHydrated(true));
-    return unsub;
-  }, []);
+    let cancelled = false;
+    const hydrate = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (!session?.user) {
+        logout();
+        nav({ to: "/login" });
+        setChecked(true);
+        return;
+      }
+      if (!useStore.getState().auth) {
+        const uid = session.user.id;
+        const [{ data: profile }, { data: roles }] = await Promise.all([
+          supabase.from("profiles").select("name, org_name").eq("id", uid).maybeSingle(),
+          supabase.from("user_roles").select("role").eq("user_id", uid),
+        ]);
+        const role = roles?.find((r) => r.role === "Admin") ? "Admin"
+          : roles?.find((r) => r.role === "Technician") ? "Technician" : "Reporter";
+        const orgName = profile?.org_name ?? "MaintainIQ Org";
+        setOrgName(orgName);
+        login({
+          name: profile?.name ?? session.user.email?.split("@")[0] ?? "User",
+          email: session.user.email ?? "",
+          orgName,
+          role: role as "Admin" | "Technician" | "Reporter",
+        });
+      }
+      setChecked(true);
+    };
+    hydrate();
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") { logout(); nav({ to: "/login" }); }
+    });
+    return () => { cancelled = true; sub.subscription.unsubscribe(); };
+  }, [login, logout, nav, setOrgName]);
 
-  useEffect(() => {
-    if (hydrated && !useStore.getState().auth) nav({ to: "/login" });
-  }, [hydrated, nav, auth]);
-
-  if (!hydrated) return <div className="grid min-h-screen place-items-center bg-background"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>;
+  if (!checked) return <div className="grid min-h-screen place-items-center bg-background"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>;
   if (!auth) return null;
+
 
   return (
     <SidebarProvider>
