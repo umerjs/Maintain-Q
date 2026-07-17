@@ -74,13 +74,21 @@ function AssetPage() {
   return (
     <div className="min-h-screen bg-slate-50 p-4">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center gap-3">
           <button
             onClick={() => navigate({ to: '/' })}
             className="text-blue-600 hover:underline text-sm"
           >
             ← Back
           </button>
+          <div className="flex items-center gap-1.5 ml-auto">
+            <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
+              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 3.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              </svg>
+            </div>
+            <span className="text-xs font-semibold text-slate-600">MaintainIQ</span>
+          </div>
         </div>
 
         <Card>

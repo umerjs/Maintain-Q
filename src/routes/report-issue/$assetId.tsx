@@ -194,7 +194,8 @@ function ReportIssuePage() {
 
                 {suggestion && (
                   <div className="bg-blue-50 p-4 rounded border border-blue-200">
-                    <p className="text-sm font-medium text-blue-900 mb-2">AI Suggestion</p>
+                    <p className="text-sm font-medium text-blue-900 mb-2">💡 Smart Suggestion</p>
+                    <p className="text-xs text-blue-700 mb-2">Based on your description, we suggest:</p>
                     <div className="flex gap-2">
                       <Badge variant="secondary">{suggestion.category}</Badge>
                       <Badge variant="secondary">{suggestion.severity}</Badge>
