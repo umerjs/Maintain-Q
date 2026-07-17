@@ -14,16 +14,263 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assets: {
+        Row: {
+          category: string
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          installation_date: string | null
+          location: string
+          manufacturer: string | null
+          model_number: string | null
+          name: string
+          status: Database["public"]["Enums"]["asset_status"]
+        }
+        Insert: {
+          category: string
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          installation_date?: string | null
+          location: string
+          manufacturer?: string | null
+          model_number?: string | null
+          name: string
+          status?: Database["public"]["Enums"]["asset_status"]
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          installation_date?: string | null
+          location?: string
+          manufacturer?: string | null
+          model_number?: string | null
+          name?: string
+          status?: Database["public"]["Enums"]["asset_status"]
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      issue_activity: {
+        Row: {
+          action: string
+          at: string
+          id: string
+          issue_id: string
+          who: string
+        }
+        Insert: {
+          action: string
+          at?: string
+          id?: string
+          issue_id: string
+          who: string
+        }
+        Update: {
+          action?: string
+          at?: string
+          id?: string
+          issue_id?: string
+          who?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_activity_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issues: {
+        Row: {
+          asset_id: string
+          assigned_to: string | null
+          code: string
+          description: string
+          due_date: string | null
+          id: string
+          internal_notes: string | null
+          photo_url: string | null
+          priority: Database["public"]["Enums"]["issue_priority"]
+          reported_at: string
+          reporter_contact: string | null
+          reporter_name: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["issue_status"]
+          title: string
+        }
+        Insert: {
+          asset_id: string
+          assigned_to?: string | null
+          code: string
+          description: string
+          due_date?: string | null
+          id?: string
+          internal_notes?: string | null
+          photo_url?: string | null
+          priority?: Database["public"]["Enums"]["issue_priority"]
+          reported_at?: string
+          reporter_contact?: string | null
+          reporter_name?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["issue_status"]
+          title: string
+        }
+        Update: {
+          asset_id?: string
+          assigned_to?: string | null
+          code?: string
+          description?: string
+          due_date?: string | null
+          id?: string
+          internal_notes?: string | null
+          photo_url?: string | null
+          priority?: Database["public"]["Enums"]["issue_priority"]
+          reported_at?: string
+          reporter_contact?: string | null
+          reporter_name?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["issue_status"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issues_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issues_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "technicians"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          org_name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          name: string
+          org_name?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          org_name?: string
+        }
+        Relationships: []
+      }
+      technicians: {
+        Row: {
+          code: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          specialization: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          specialization: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          specialization?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "Admin" | "Technician" | "Reporter"
+      asset_status: "Active" | "Under Maintenance" | "Retired"
+      issue_priority: "Low" | "Medium" | "High" | "Critical"
+      issue_status: "Open" | "In Progress" | "Resolved" | "Overdue"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +397,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["Admin", "Technician", "Reporter"],
+      asset_status: ["Active", "Under Maintenance", "Retired"],
+      issue_priority: ["Low", "Medium", "High", "Critical"],
+      issue_status: ["Open", "In Progress", "Resolved", "Overdue"],
+    },
   },
 } as const
