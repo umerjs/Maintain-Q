@@ -5,20 +5,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScanLine } from "lucide-react";
 import { useStore } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: Login });
 
 function Login() {
   const login = useStore((s) => s.login);
+  const setOrgName = useStore((s) => s.setOrgName);
   const nav = useNavigate();
-  const [email, setEmail] = useState("admin@demo.com");
-  const [password, setPassword] = useState("demo");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) { toast.error("Enter email and password"); return; }
-    login({ name: email.split("@")[0], email, orgName: "MaintainIQ Demo Org", role: "Admin" });
+    setLoading(true);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error || !data.user) {
+      setLoading(false);
+      toast.error(error?.message ?? "Sign-in failed");
+      return;
+    }
+    const [{ data: profile }, { data: roles }] = await Promise.all([
+      supabase.from("profiles").select("name, org_name").eq("id", data.user.id).maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", data.user.id),
+    ]);
+    const role = roles?.find((r) => r.role === "Admin") ? "Admin"
+      : roles?.find((r) => r.role === "Technician") ? "Technician" : "Reporter";
+    const orgName = profile?.org_name ?? "MaintainIQ Org";
+    setOrgName(orgName);
+    login({
+      name: profile?.name ?? email.split("@")[0],
+      email,
+      orgName,
+      role: role as "Admin" | "Technician" | "Reporter",
+    });
     toast.success("Welcome back!");
     nav({ to: "/app/dashboard" });
   };
@@ -36,12 +59,11 @@ function Login() {
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div><Label htmlFor="e">Email</Label><Input id="e" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
             <div><Label htmlFor="p">Password</Label><Input id="p" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>
-            <Button type="submit" className="w-full">Log in</Button>
+            <Button type="submit" className="w-full" disabled={loading}>{loading ? "Signing in…" : "Log in"}</Button>
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             No account? <Link to="/signup" className="font-medium text-primary hover:underline">Sign up</Link>
           </p>
-          <p className="mt-2 text-center text-xs text-muted-foreground">Demo: any email works.</p>
         </div>
       </div>
     </div>

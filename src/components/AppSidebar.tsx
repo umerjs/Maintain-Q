@@ -1,7 +1,8 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Package, AlertTriangle, Wrench, FileBarChart, Settings, LogOut, ClipboardList, ScanLine
+  LayoutDashboard, Package, AlertTriangle, Wrench, FileBarChart, Settings, LogOut, ClipboardList, ScanLine, QrCode
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
@@ -14,6 +15,7 @@ const adminNav = [
   { title: "Assets", url: "/app/assets", icon: Package },
   { title: "Issues", url: "/app/issues", icon: AlertTriangle },
   { title: "Technicians", url: "/app/technicians", icon: Wrench },
+  { title: "QR Labels", url: "/app/qr-labels", icon: QrCode },
   { title: "Reports", url: "/app/reports", icon: FileBarChart },
   { title: "Settings", url: "/app/settings", icon: Settings },
 ];
@@ -81,7 +83,7 @@ export function AppSidebar() {
           variant="ghost"
           size={collapsed ? "icon" : "sm"}
           className="justify-start"
-          onClick={() => { logout(); navigate({ to: "/" }); }}
+          onClick={async () => { await supabase.auth.signOut().catch(() => {}); logout(); navigate({ to: "/" }); }}
         >
           <LogOut className="h-4 w-4" />
           {!collapsed && <span className="ml-2">Log out</span>}

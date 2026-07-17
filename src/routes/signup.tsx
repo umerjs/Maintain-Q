@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScanLine } from "lucide-react";
 import { useStore } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signup")({ component: Signup });
@@ -17,10 +18,25 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [org, setOrg] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !org || !password) { toast.error("Fill in all fields"); return; }
+    setLoading(true);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: { name, org_name: org },
+      },
+    });
+    if (error || !data.user) {
+      setLoading(false);
+      toast.error(error?.message ?? "Signup failed");
+      return;
+    }
     setOrgName(org);
     login({ name, email, orgName: org, role: "Admin" });
     toast.success("Account created — welcome to MaintainIQ!");
@@ -41,8 +57,8 @@ function Signup() {
             <div><Label htmlFor="n">Your name</Label><Input id="n" value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Smith" required /></div>
             <div><Label htmlFor="e">Work email</Label><Input id="e" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jane@company.com" required /></div>
             <div><Label htmlFor="o">Organization name</Label><Input id="o" value={org} onChange={(e) => setOrg(e.target.value)} placeholder="Acme Facilities" required /></div>
-            <div><Label htmlFor="p">Password</Label><Input id="p" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>
-            <Button type="submit" className="w-full">Create account</Button>
+            <div><Label htmlFor="p">Password</Label><Input id="p" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></div>
+            <Button type="submit" className="w-full" disabled={loading}>{loading ? "Creating…" : "Create account"}</Button>
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Have an account? <Link to="/login" className="font-medium text-primary hover:underline">Log in</Link>
