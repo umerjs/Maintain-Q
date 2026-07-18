@@ -42,7 +42,24 @@ export const useAuthStore = create<AuthState>((set) => ({
           .eq('id', user.id)
           .single()
 
-        set({ profile })
+        if (profile) {
+          set({ profile })
+        } else {
+          // Profiles table may not exist yet — fall back to user_metadata set at sign-up
+          const meta = user.user_metadata as { role?: string; full_name?: string } | undefined
+          if (meta?.role) {
+            set({
+              profile: {
+                id: user.id,
+                email: user.email ?? '',
+                role: meta.role,
+                full_name: meta.full_name ?? '',
+              } as Profile,
+            })
+          } else {
+            set({ profile: null })
+          }
+        }
       }
     } catch (error) {
       console.error('Auth initialization error:', error)

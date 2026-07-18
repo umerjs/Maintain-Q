@@ -16,12 +16,14 @@ function Home() {
     if (!initialized) return
 
     if (user && profile) {
-      const roleDashboard = {
+      const roleDashboard: Record<string, string> = {
         student: '/dashboard/student',
+        reporter: '/dashboard/student',
         technician: '/dashboard/technician',
         admin: '/dashboard/admin',
+        administrator: '/dashboard/admin',
       }
-      navigate({ to: roleDashboard[profile.role] })
+      navigate({ to: roleDashboard[profile.role] ?? '/dashboard/student' })
     } else {
       navigate({ to: '/login' })
     }
