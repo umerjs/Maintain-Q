@@ -325,7 +325,45 @@ INSERT INTO public.categories (name) VALUES
 ON CONFLICT (name) DO NOTHING;
 
 -- ──────────────────────────────────────────────────────────────
--- 7. BACKFILL DEMO USER PROFILES
+-- 7. DEMO DATA — tickets in various states
+-- Inserted after tables exist; FKs resolved via subquery on email.
+-- Safe: uses ON CONFLICT DO NOTHING.
+-- ──────────────────────────────────────────────────────────────
+
+-- We need the demo user IDs first — resolved inline via subquery.
+
+-- Insert demo tickets (reporter = student demo, assigned = tech demo)
+INSERT INTO public.tickets
+  (asset_id, reported_by, assigned_to, title, description, category, severity, status, resolution_notes, created_at)
+SELECT
+  a.id,
+  student.id,
+  tech.id,
+  t.title,
+  t.description,
+  t.category,
+  t.severity::text,
+  t.status::text,
+  t.resolution_notes,
+  now() - t.age
+FROM (
+  VALUES
+    ('ASSET-001', 'Elevator door does not close properly',       'The main elevator door hesitates and sometimes reverses before closing. Affects all users.',       'Hardware',    'high',     'assigned',    NULL,                               INTERVAL '2 days'),
+    ('ASSET-002', 'HVAC making loud rattling noise',             'Rooftop HVAC unit started making a loud rattling noise during operation. Noticeable in nearby rooms.','HVAC',       'medium',   'in_progress', 'Identified loose fan bracket. Parts ordered.',  INTERVAL '5 days'),
+    ('ASSET-003', 'Lab freezer temperature alarm triggered',     'Freezer alarm went off at 2am. Temperature logged at -60°C instead of -80°C. Samples at risk.', 'Hardware',    'critical', 'resolved',    'Compressor replaced. Temperature stable at -80°C.', INTERVAL '10 days'),
+    ('ASSET-004', 'Fire panel showing zone fault',               'Zone 3 fault indicator is lit on fire panel A. Could be a sensor or wiring issue.',                'Fire Safety', 'high',     'open',        NULL,                               INTERVAL '1 day'),
+    ('ASSET-005', 'Generator failed to start during drill',      'During yesterday''s power drill the generator did not auto-start within the 10-second window.',    'Power',       'critical', 'escalated',   'Escalated to external service provider.',         INTERVAL '3 days'),
+    ('ASSET-001', 'Elevator interior light flickering',          'The ceiling light in the elevator flickers intermittently throughout the day.',                     'Electrical',  'low',      'open',        NULL,                               INTERVAL '6 hours'),
+    ('ASSET-002', 'HVAC thermostat unresponsive',                'Block B thermostat does not respond to input. Temperature in affected rooms is not adjustable.',    'HVAC',        'medium',   'assigned',    NULL,                               INTERVAL '4 days'),
+    ('ASSET-003', 'Freezer door seal cracked',                   'Visible crack on the door rubber seal. Cold air is leaking. Samples may be compromised.',          'Hardware',    'high',     'in_progress', 'Seal ordered. Interim: door taped shut.',         INTERVAL '7 days')
+) AS t(asset_qr, title, description, category, severity, status, resolution_notes, age)
+JOIN public.assets a        ON a.qr_code_id = t.asset_qr
+JOIN auth.users student     ON student.email = 'student@maintainiq.demo'
+JOIN auth.users tech        ON tech.email   = 'tech@maintainiq.demo'
+ON CONFLICT DO NOTHING;
+
+-- ──────────────────────────────────────────────────────────────
+-- 8. BACKFILL DEMO USER PROFILES
 -- The three demo accounts were created via Auth Admin API before
 -- this migration ran, so the trigger never fired for them.
 -- We upsert their profiles here using the known auth user IDs.
