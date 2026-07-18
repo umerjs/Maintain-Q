@@ -33,9 +33,11 @@ import { Route as DashboardTechnicianIndexRouteImport } from './routes/dashboard
 import { Route as DashboardStudentIndexRouteImport } from './routes/dashboard/student/index'
 import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard/admin/index'
 import { Route as DashboardTechnicianAssignedTicketsRouteImport } from './routes/dashboard/technician/assigned-tickets'
+import { Route as DashboardStudentReportIssueRouteImport } from './routes/dashboard/student/report-issue'
 import { Route as DashboardStudentMyReportsRouteImport } from './routes/dashboard/student/my-reports'
 import { Route as DashboardAdminTicketsRouteImport } from './routes/dashboard/admin/tickets'
 import { Route as DashboardAdminAssetsRouteImport } from './routes/dashboard/admin/assets'
+import { Route as DashboardAdminAddAssetRouteImport } from './routes/dashboard/admin/add-asset'
 import { Route as AppRequestsRequestIdRouteImport } from './routes/app.requests.$requestId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -160,6 +162,12 @@ const DashboardTechnicianAssignedTicketsRoute =
     path: '/dashboard/technician/assigned-tickets',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardStudentReportIssueRoute =
+  DashboardStudentReportIssueRouteImport.update({
+    id: '/dashboard/student/report-issue',
+    path: '/dashboard/student/report-issue',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardStudentMyReportsRoute =
   DashboardStudentMyReportsRouteImport.update({
     id: '/dashboard/student/my-reports',
@@ -174,6 +182,11 @@ const DashboardAdminTicketsRoute = DashboardAdminTicketsRouteImport.update({
 const DashboardAdminAssetsRoute = DashboardAdminAssetsRouteImport.update({
   id: '/dashboard/admin/assets',
   path: '/dashboard/admin/assets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardAdminAddAssetRoute = DashboardAdminAddAssetRouteImport.update({
+  id: '/dashboard/admin/add-asset',
+  path: '/dashboard/admin/add-asset',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRequestsRequestIdRoute = AppRequestsRequestIdRouteImport.update({
@@ -204,9 +217,11 @@ export interface FileRoutesByFullPath {
   '/report-issue/$assetId': typeof ReportIssueAssetIdRoute
   '/app/': typeof AppIndexRoute
   '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
+  '/dashboard/admin/add-asset': typeof DashboardAdminAddAssetRoute
   '/dashboard/admin/assets': typeof DashboardAdminAssetsRoute
   '/dashboard/admin/tickets': typeof DashboardAdminTicketsRoute
   '/dashboard/student/my-reports': typeof DashboardStudentMyReportsRoute
+  '/dashboard/student/report-issue': typeof DashboardStudentReportIssueRoute
   '/dashboard/technician/assigned-tickets': typeof DashboardTechnicianAssignedTicketsRoute
   '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/dashboard/student/': typeof DashboardStudentIndexRoute
@@ -233,9 +248,11 @@ export interface FileRoutesByTo {
   '/report-issue/$assetId': typeof ReportIssueAssetIdRoute
   '/app': typeof AppIndexRoute
   '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
+  '/dashboard/admin/add-asset': typeof DashboardAdminAddAssetRoute
   '/dashboard/admin/assets': typeof DashboardAdminAssetsRoute
   '/dashboard/admin/tickets': typeof DashboardAdminTicketsRoute
   '/dashboard/student/my-reports': typeof DashboardStudentMyReportsRoute
+  '/dashboard/student/report-issue': typeof DashboardStudentReportIssueRoute
   '/dashboard/technician/assigned-tickets': typeof DashboardTechnicianAssignedTicketsRoute
   '/dashboard/admin': typeof DashboardAdminIndexRoute
   '/dashboard/student': typeof DashboardStudentIndexRoute
@@ -264,9 +281,11 @@ export interface FileRoutesById {
   '/report-issue/$assetId': typeof ReportIssueAssetIdRoute
   '/app/': typeof AppIndexRoute
   '/app/requests/$requestId': typeof AppRequestsRequestIdRoute
+  '/dashboard/admin/add-asset': typeof DashboardAdminAddAssetRoute
   '/dashboard/admin/assets': typeof DashboardAdminAssetsRoute
   '/dashboard/admin/tickets': typeof DashboardAdminTicketsRoute
   '/dashboard/student/my-reports': typeof DashboardStudentMyReportsRoute
+  '/dashboard/student/report-issue': typeof DashboardStudentReportIssueRoute
   '/dashboard/technician/assigned-tickets': typeof DashboardTechnicianAssignedTicketsRoute
   '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/dashboard/student/': typeof DashboardStudentIndexRoute
@@ -296,9 +315,11 @@ export interface FileRouteTypes {
     | '/report-issue/$assetId'
     | '/app/'
     | '/app/requests/$requestId'
+    | '/dashboard/admin/add-asset'
     | '/dashboard/admin/assets'
     | '/dashboard/admin/tickets'
     | '/dashboard/student/my-reports'
+    | '/dashboard/student/report-issue'
     | '/dashboard/technician/assigned-tickets'
     | '/dashboard/admin/'
     | '/dashboard/student/'
@@ -325,9 +346,11 @@ export interface FileRouteTypes {
     | '/report-issue/$assetId'
     | '/app'
     | '/app/requests/$requestId'
+    | '/dashboard/admin/add-asset'
     | '/dashboard/admin/assets'
     | '/dashboard/admin/tickets'
     | '/dashboard/student/my-reports'
+    | '/dashboard/student/report-issue'
     | '/dashboard/technician/assigned-tickets'
     | '/dashboard/admin'
     | '/dashboard/student'
@@ -355,9 +378,11 @@ export interface FileRouteTypes {
     | '/report-issue/$assetId'
     | '/app/'
     | '/app/requests/$requestId'
+    | '/dashboard/admin/add-asset'
     | '/dashboard/admin/assets'
     | '/dashboard/admin/tickets'
     | '/dashboard/student/my-reports'
+    | '/dashboard/student/report-issue'
     | '/dashboard/technician/assigned-tickets'
     | '/dashboard/admin/'
     | '/dashboard/student/'
@@ -374,9 +399,11 @@ export interface RootRouteChildren {
   AssetQrCodeIdRoute: typeof AssetQrCodeIdRoute
   DashboardLayoutRoute: typeof DashboardLayoutRoute
   ReportIssueAssetIdRoute: typeof ReportIssueAssetIdRoute
+  DashboardAdminAddAssetRoute: typeof DashboardAdminAddAssetRoute
   DashboardAdminAssetsRoute: typeof DashboardAdminAssetsRoute
   DashboardAdminTicketsRoute: typeof DashboardAdminTicketsRoute
   DashboardStudentMyReportsRoute: typeof DashboardStudentMyReportsRoute
+  DashboardStudentReportIssueRoute: typeof DashboardStudentReportIssueRoute
   DashboardTechnicianAssignedTicketsRoute: typeof DashboardTechnicianAssignedTicketsRoute
   DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
   DashboardStudentIndexRoute: typeof DashboardStudentIndexRoute
@@ -553,6 +580,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTechnicianAssignedTicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/student/report-issue': {
+      id: '/dashboard/student/report-issue'
+      path: '/dashboard/student/report-issue'
+      fullPath: '/dashboard/student/report-issue'
+      preLoaderRoute: typeof DashboardStudentReportIssueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/student/my-reports': {
       id: '/dashboard/student/my-reports'
       path: '/dashboard/student/my-reports'
@@ -572,6 +606,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/admin/assets'
       fullPath: '/dashboard/admin/assets'
       preLoaderRoute: typeof DashboardAdminAssetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/admin/add-asset': {
+      id: '/dashboard/admin/add-asset'
+      path: '/dashboard/admin/add-asset'
+      fullPath: '/dashboard/admin/add-asset'
+      preLoaderRoute: typeof DashboardAdminAddAssetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/requests/$requestId': {
@@ -626,9 +667,11 @@ const rootRouteChildren: RootRouteChildren = {
   AssetQrCodeIdRoute: AssetQrCodeIdRoute,
   DashboardLayoutRoute: DashboardLayoutRoute,
   ReportIssueAssetIdRoute: ReportIssueAssetIdRoute,
+  DashboardAdminAddAssetRoute: DashboardAdminAddAssetRoute,
   DashboardAdminAssetsRoute: DashboardAdminAssetsRoute,
   DashboardAdminTicketsRoute: DashboardAdminTicketsRoute,
   DashboardStudentMyReportsRoute: DashboardStudentMyReportsRoute,
+  DashboardStudentReportIssueRoute: DashboardStudentReportIssueRoute,
   DashboardTechnicianAssignedTicketsRoute:
     DashboardTechnicianAssignedTicketsRoute,
   DashboardAdminIndexRoute: DashboardAdminIndexRoute,

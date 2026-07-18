@@ -12,6 +12,12 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Use Vercel nitro preset so static assets (CSS, JS) are served correctly on Vercel.
+  // The default "cloudflare-module" preset structures output for Cloudflare Workers,
+  // which causes CSS/asset 404s when deployed to Vercel.
+  nitro: {
+    preset: "vercel",
+  },
   vite: {
     server: {
       host: "0.0.0.0",
