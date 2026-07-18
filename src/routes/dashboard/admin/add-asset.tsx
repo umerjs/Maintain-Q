@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import QRCode from 'qrcode.react'
+import { QRCodeSVG } from 'qrcode.react'
 
 export const Route = createFileRoute('/dashboard/admin/add-asset')({
   component: AddAssetPage,
@@ -177,7 +177,7 @@ function AddAssetPage() {
           <CardContent className="flex flex-col items-center justify-center space-y-4">
             {qrGenerated && formData.qr_code_id ? (
               <>
-                <QRCode value={formData.qr_code_id} size={200} />
+                <QRCodeSVG value={formData.qr_code_id} size={200} />
                 <Button
                   variant="outline"
                   onClick={() => {
