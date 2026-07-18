@@ -1,14 +1,48 @@
+import { useEffect, useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAuthStore } from '@/lib/auth-store'
+import { getStudentTickets } from '@/lib/db'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { QrCode, FileText, ClipboardList, ArrowRight } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { QrCode, FileText, ClipboardList, ArrowRight, Loader2 } from 'lucide-react'
 
 export const Route = createFileRoute('/dashboard/student/')({
   component: StudentDashboard,
 })
 
+const statusColor: Record<string, string> = {
+  open: 'bg-blue-100 text-blue-800',
+  assigned: 'bg-purple-100 text-purple-800',
+  in_progress: 'bg-yellow-100 text-yellow-800',
+  resolved: 'bg-green-100 text-green-800',
+  escalated: 'bg-orange-100 text-orange-800',
+  rejected: 'bg-red-100 text-red-800',
+}
+
 function StudentDashboard() {
+  const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
+  const [tickets, setTickets] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!user) return
+      try {
+        const data = await getStudentTickets(user.id)
+        setTickets(data)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetch()
+  }, [user])
+
+  const openCount = tickets.filter((t) => ['open', 'assigned', 'in_progress'].includes(t.status)).length
+  const resolvedCount = tickets.filter((t) => t.status === 'resolved').length
+  const recentTickets = tickets.slice(0, 3)
 
   return (
     <div className="space-y-8">
@@ -51,6 +85,7 @@ function StudentDashboard() {
 
       {/* Quick actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Scan hint */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
@@ -69,6 +104,7 @@ function StudentDashboard() {
           </CardContent>
         </Card>
 
+        {/* My Reports preview */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -80,12 +116,31 @@ function StudentDashboard() {
                 View all <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
-            <CardDescription>Track all issue reports you've submitted</CardDescription>
+            <CardDescription>
+              {loading ? 'Loading…' : `${tickets.length} total · ${openCount} open · ${resolvedCount} resolved`}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-400 text-center py-4">
-              No reports yet. Scan a QR code to get started.
-            </p>
+            {loading ? (
+              <div className="flex items-center justify-center py-6">
+                <Loader2 className="w-5 h-5 animate-spin text-slate-300" />
+              </div>
+            ) : recentTickets.length === 0 ? (
+              <p className="text-sm text-slate-400 text-center py-4">
+                No reports yet. Scan a QR code to get started.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {recentTickets.map((ticket) => (
+                  <div key={ticket.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                    <p className="text-sm text-slate-700 truncate flex-1">{ticket.title}</p>
+                    <Badge className={`text-xs ml-2 shrink-0 ${statusColor[ticket.status] ?? ''}`}>
+                      {ticket.status.replace(/_/g, ' ')}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

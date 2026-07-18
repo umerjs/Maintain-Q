@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
-import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { Loader2, Plus, Trash2, QrCode, Pencil, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { QRCodeSVG } from 'qrcode.react'
 
 export const Route = createFileRoute('/dashboard/admin/assets')({
   component: AdminAssetsPage,
@@ -50,10 +51,15 @@ const assetSchema = z.object({
 
 type AssetFormData = z.infer<typeof assetSchema>
 
-const statusColor = {
+const statusColor: Record<string, string> = {
   working: 'bg-green-100 text-green-800',
   under_repair: 'bg-yellow-100 text-yellow-800',
   out_of_service: 'bg-red-100 text-red-800',
+}
+
+function getAssetUrl(qrCodeId: string): string {
+  const base = typeof window !== 'undefined' ? window.location.origin : ''
+  return `${base}/asset/${qrCodeId}`
 }
 
 function AdminAssetsPage() {
@@ -63,6 +69,7 @@ function AdminAssetsPage() {
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [qrAsset, setQrAsset] = useState<any | null>(null)
 
   const form = useForm<AssetFormData>({
     resolver: zodResolver(assetSchema),
@@ -89,7 +96,6 @@ function AdminAssetsPage() {
         setLoading(false)
       }
     }
-
     fetchAssets()
   }, [user])
 
@@ -134,6 +140,10 @@ function AdminAssetsPage() {
     setOpen(true)
   }
 
+  const handlePrintQR = () => {
+    window.print()
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -146,16 +156,17 @@ function AdminAssetsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Assets Management</h1>
-          <p className="text-slate-600">Add and manage inventory</p>
+          <h1 className="text-2xl font-bold text-slate-900">Assets Management</h1>
+          <p className="text-slate-500 text-sm mt-1">
+            {assets.length} asset{assets.length !== 1 ? 's' : ''} registered
+          </p>
         </div>
+
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button
-              onClick={() => {
-                setEditingId(null)
-                form.reset()
-              }}
+              onClick={() => { setEditingId(null); form.reset() }}
+              className="bg-blue-600 hover:bg-blue-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Asset
@@ -164,7 +175,11 @@ function AdminAssetsPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{editingId ? 'Edit Asset' : 'Add New Asset'}</DialogTitle>
-              <DialogDescription>Create or update an asset in the system</DialogDescription>
+              <DialogDescription>
+                {editingId
+                  ? 'Update asset details. QR Code ID cannot be changed.'
+                  : 'Register a new asset. The QR Code ID will be used to generate a scannable code.'}
+              </DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
@@ -197,33 +212,35 @@ function AdminAssetsPage() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Computer" {...field} disabled={submitting} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Computer" {...field} disabled={submitting} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Location</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Lab A, Room 201" {...field} disabled={submitting} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Lab A, Room 201" {...field} disabled={submitting} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
@@ -263,6 +280,7 @@ function AdminAssetsPage() {
                 />
 
                 <Button type="submit" className="w-full" disabled={submitting}>
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                   {submitting ? 'Saving...' : editingId ? 'Update Asset' : 'Create Asset'}
                 </Button>
               </form>
@@ -271,56 +289,68 @@ function AdminAssetsPage() {
         </Dialog>
       </div>
 
+      {/* Asset grid */}
       {assets.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-slate-500">No assets yet. Create one to get started.</p>
+          <CardContent className="py-16 text-center">
+            <QrCode className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+            <p className="text-slate-500 font-medium">No assets yet</p>
+            <p className="text-slate-400 text-sm mt-1">Create your first asset to generate a QR code.</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {assets.map((asset) => (
-            <Card key={asset.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle>{asset.name}</CardTitle>
-                    <CardDescription>{asset.category}</CardDescription>
+            <Card key={asset.id} className="flex flex-col">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <CardTitle className="text-base leading-tight truncate">{asset.name}</CardTitle>
+                    <CardDescription className="text-xs mt-0.5">{asset.category} · {asset.location}</CardDescription>
                   </div>
-                  <Badge className={statusColor[asset.status as keyof typeof statusColor]}>
+                  <Badge className={`text-xs shrink-0 ${statusColor[asset.status as keyof typeof statusColor] ?? 'bg-slate-100'}`}>
                     {asset.status.replace(/_/g, ' ')}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
-                  <div>
-                    <p className="text-slate-600">QR Code ID</p>
-                    <p className="font-mono text-slate-900">{asset.qr_code_id}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-600">Location</p>
-                    <p className="text-slate-900">{asset.location}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-600">Created</p>
-                    <p className="text-slate-900">{new Date(asset.created_at).toLocaleDateString()}</p>
-                  </div>
+
+              <CardContent className="flex-1 space-y-3">
+                {/* QR ID */}
+                <div className="flex items-center gap-2 text-xs bg-slate-50 rounded px-2.5 py-1.5 border border-slate-100">
+                  <QrCode className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="font-mono text-slate-700 truncate">{asset.qr_code_id}</span>
                 </div>
-                <div className="flex gap-2">
+
+                {asset.notes && (
+                  <p className="text-xs text-slate-500 line-clamp-2">{asset.notes}</p>
+                )}
+
+                {/* Actions */}
+                <div className="flex gap-2 pt-1">
                   <Button
                     variant="outline"
                     size="sm"
+                    className="flex-1 text-xs gap-1.5"
+                    onClick={() => setQrAsset(asset)}
+                  >
+                    <QrCode className="w-3.5 h-3.5" />
+                    QR Code
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs gap-1"
                     onClick={() => handleEdit(asset)}
                   >
-                    Edit
+                    <Pencil className="w-3.5 h-3.5" />
                   </Button>
                   <Button
                     variant="destructive"
                     size="sm"
+                    className="text-xs"
                     onClick={() => handleDelete(asset.id)}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </Button>
                 </div>
               </CardContent>
@@ -328,6 +358,65 @@ function AdminAssetsPage() {
           ))}
         </div>
       )}
+
+      {/* QR Code Dialog */}
+      <Dialog open={!!qrAsset} onOpenChange={(open) => { if (!open) setQrAsset(null) }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>QR Code — {qrAsset?.name}</DialogTitle>
+            <DialogDescription>
+              Scan this code to view the asset page and report issues.
+            </DialogDescription>
+          </DialogHeader>
+
+          {qrAsset && (
+            <div className="flex flex-col items-center gap-4 py-2">
+              <div className="p-4 bg-white border-2 border-slate-200 rounded-xl">
+                <QRCodeSVG
+                  value={getAssetUrl(qrAsset.qr_code_id)}
+                  size={200}
+                  level="H"
+                  includeMargin={false}
+                />
+              </div>
+
+              <div className="text-center space-y-1">
+                <p className="font-mono text-sm font-semibold text-slate-700">{qrAsset.qr_code_id}</p>
+                <p className="text-xs text-slate-400">{qrAsset.location}</p>
+              </div>
+
+              <div className="w-full space-y-2">
+                <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded px-3 py-2">
+                  <span className="text-xs text-slate-500 flex-1 truncate font-mono">
+                    {getAssetUrl(qrAsset.qr_code_id)}
+                  </span>
+                  <button
+                    className="text-blue-600 hover:underline text-xs shrink-0"
+                    onClick={() => {
+                      navigator.clipboard.writeText(getAssetUrl(qrAsset.qr_code_id))
+                      toast.success('URL copied!')
+                    }}
+                  >
+                    Copy
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={handlePrintQR}>
+                    Print QR
+                  </Button>
+                  <a href={getAssetUrl(qrAsset.qr_code_id)} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="text-xs gap-1.5 w-full">
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Open Page
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

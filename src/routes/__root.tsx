@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import { useAuthStore } from '@/lib/auth-store'
 import { supabase } from '@/lib/supabase'
+import { Toaster } from '@/components/ui/sonner'
 import '../styles.css'
 
 export const Route = createRootRoute({
@@ -45,8 +46,18 @@ function RootComponent() {
   }, [initialize, setUser, setProfile])
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Outlet />
-    </div>
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>MaintainIQ — Inventory Management System</title>
+        <HeadContent />
+      </head>
+      <body className="min-h-screen bg-slate-50 antialiased">
+        <Outlet />
+        <Toaster richColors position="top-right" />
+        <Scripts />
+      </body>
+    </html>
   )
 }

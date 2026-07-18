@@ -226,6 +226,18 @@ export async function markAllNotificationsAsRead(userId: string) {
   if (error) throw error
 }
 
+// ===== USERS / PROFILES =====
+export async function getTechnicians(): Promise<{ id: string; full_name: string; role: string }[]> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, role')
+    .eq('role', 'technician')
+    .order('full_name', { ascending: true })
+
+  if (error) throw error
+  return data || []
+}
+
 // ===== AI CATEGORY/SEVERITY SUGGESTION =====
 export function suggestCategoryAndSeverity(description: string): {
   category: string

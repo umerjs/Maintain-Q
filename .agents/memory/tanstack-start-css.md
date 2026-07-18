@@ -1,19 +1,41 @@
 ---
-name: TanStack Start CSS injection pattern
-description: How CSS is loaded in this project and why SSR screenshots look unstyled
+name: TanStack Start CSS injection
+description: Why CSS doesn't render and how to fix it in TanStack Start SSR
 ---
 
-## Rule
-Do not assume missing CSS because screenshots look unstyled. TanStack Start (dev mode) injects
-`<link>` tags via JavaScript (`$_TSR.router` manifest) after the initial HTML is served.
-SSR output has Tailwind class names on elements but no static `<link rel="stylesheet">` in `<head>`.
+## The Rule
+`__root.tsx` MUST render a full HTML document with `HeadContent` and `Scripts` from `@tanstack/react-router`. Without `HeadContent`, Vite's CSS manifest never gets injected into `<head>` and the browser never downloads the stylesheet — regardless of whether `styles.css` is imported in the route file.
 
-## Why
-The `@lovable.dev/vite-tanstack-config` plugin manages CSS injection via TanStack Start's
-virtual `/@tanstack-start/styles.css` endpoint. The link is added by the client entry script.
+## Correct pattern
 
-## How to apply
-- Import `../styles.css` (or `./styles.css`) in `__root.tsx` to register it with the Vite pipeline
-- Real browsers see styled pages once JS hydrates (fast)
-- Headless screenshots (taken immediately on page load) show raw HTML before hydration
-- If CSS genuinely breaks, check that `src/styles.css` has `@import "tailwindcss"` at top
+```tsx
+import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
+import '../styles.css'
+
+export const Route = createRootRoute({ component: RootComponent })
+
+function RootComponent() {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <HeadContent />
+      </head>
+      <body>
+        <Outlet />
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+```
+
+**Why:** TanStack Start injects CSS via a JavaScript manifest (not a static `<link>` tag). `HeadContent` is what emits those `<link rel="stylesheet">` tags. Without it, SSR HTML has no CSS references at all.
+
+**How to apply:** Any TanStack Start project where CSS "doesn't work" — check `__root.tsx` for `HeadContent` and `Scripts` first.
+
+## Also note
+- `@theme` / `@utility` warnings from lightningcss (via `tw-animate-css`) are harmless — CSS still processes correctly
+- Screenshots of SSR pages may look unstyled if captured before JS hydration injects the stylesheet link — this is a screenshot timing artifact, not a CSS bug
+- Both `HeadContent` and `Scripts` are exported from `@tanstack/react-router` (confirmed v1)
